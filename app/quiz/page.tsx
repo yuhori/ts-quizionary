@@ -35,38 +35,13 @@ const newTestamentBooks = [
 const formats = ['4択クイズ'];
 
 export default function QuizPage() {
-//   const quizzes = [
-//     {
-//       question: "詩編2篇において強調されるテーマは何ですか？",
-//       choices: ["喜び", "悲しみ", "悔い改め", "賛美"],
-//       answer: "悔い改め",
-//       explanation: "詩編2篇では神の怒りと裁き、そして悔い改めの重要性が語られます。",
-//       sources: ["創世記 1:1-2:3"],
-//     },
-//     {
-//       question: "イエス・キリストが誕生した場所はどこですか？",
-//       choices: ["ナザレ", "ベツレヘム", "エルサレム", "ガリラヤ"],
-//       answer: "ベツレヘム",
-//       explanation: "新約聖書によれば、イエスはベツレヘムで誕生しました。",
-//       sources: ["ルカによる福音書 2:1-7"],
-//     },
-//     {
-//       question: "モーセが受けた戒めはいくつありますか？",
-//       choices: ["5つ", "7つ", "10個", "12個"],
-//       answer: "10個",
-//       explanation: "シナイ山で神から授けられた十戒は、モーセを通してイスラエルに伝えられました。",
-//       sources: ["出エジプト記 20:1-17"],
-//     },
-//   ];
-
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
-//   const quiz = quizzes[currentQuizIndex];
 
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const selectedBooks = selectedCategory === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
+  const [selectedTestament, setSelectedTestament] = useState(categories[0]);
+  const selectedBooks = selectedTestament === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
   const [selectedBook, setSelectedBook] = useState(selectedBooks[0]);
   const [selectedFormat, setSelectedFormat] = useState(formats[0]);
 
@@ -86,9 +61,20 @@ export default function QuizPage() {
   };
 
   useEffect(() => {
-    async function fetchQuizzes() {
+    // タブ変更などでリセットしたい処理
+    setQuizzes([]);
+    setCurrentQuizIndex(0);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+
+    // 必要ならこの中で再フェッチする
+    async function fetchFilteredQuizzes() {
       try {
-        const res = await fetch('/api/quizzes',
+        setLoading(true);
+        const selectedType = selectedTestament === '旧約聖書' ? 'old' : 'new';
+        const selectedIndex = selectedBooks.indexOf(selectedBook) + 1;
+        console.log(selectedIndex, selectedType);
+        const res = await fetch(`/api/quizzes?type=${selectedType}&index=${selectedIndex}`,
           { cache: 'no-store' }
         );
         if (!res.ok) throw new Error('Failed to fetch quizzes');
@@ -100,8 +86,9 @@ export default function QuizPage() {
         setLoading(false);
       }
     }
-    fetchQuizzes();
-  }, []);
+
+    fetchFilteredQuizzes();
+  }, [selectedTestament, selectedBook, selectedFormat]);
 
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p>エラーが発生しました: {error}</p>;
@@ -117,11 +104,11 @@ export default function QuizPage() {
       <div className="flex flex-wrap gap-4 mb-6">
         <select
           className="p-2 border w-full sm:w-auto"
-          value={selectedCategory}
+          value={selectedTestament}
           onChange={(e) => {
-            const newCategory = e.target.value;
-            setSelectedCategory(newCategory);
-            const newBooks = newCategory === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
+            const newTestament = e.target.value;
+            setSelectedTestament(newTestament);
+            const newBooks = newTestament === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
             setSelectedBook(newBooks[0]);
           }}
         >
