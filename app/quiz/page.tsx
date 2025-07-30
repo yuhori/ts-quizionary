@@ -33,13 +33,26 @@ export default function QuizPage() {
       answer: "悔い改め",
       explanation: "詩編2篇では神の怒りと裁き、そして悔い改めの重要性が語られます。",
     },
+    {
+      question: "イエス・キリストが誕生した場所はどこですか？",
+      choices: ["ナザレ", "ベツレヘム", "エルサレム", "ガリラヤ"],
+      answer: "ベツレヘム",
+      explanation: "新約聖書によれば、イエスはベツレヘムで誕生しました。",
+    },
+    {
+      question: "モーセが受けた戒めはいくつありますか？",
+      choices: ["5つ", "7つ", "10個", "12個"],
+      answer: "10個",
+      explanation: "シナイ山で神から授けられた十戒は、モーセを通してイスラエルに伝えられました。",
+    },
   ];
 
-  const quiz = quizzes[0]; // 仮の固定クイズ
+  
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const quiz = quizzes[currentQuizIndex];
 
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const selectedBooks = selectedCategory === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
-
   const [selectedBook, setSelectedBook] = useState(selectedBooks[0]);
   const [selectedFormat, setSelectedFormat] = useState(formats[0]);
 
@@ -49,6 +62,13 @@ export default function QuizPage() {
   const handleAnswer = (choice: string) => {
     setSelectedAnswer(choice);
     setShowExplanation(true);
+  };
+
+  const handleNextQuestion = () => {
+    const nextIndex = (currentQuizIndex + 1) % quizzes.length;
+    setCurrentQuizIndex(nextIndex);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
   };
 
   return (
@@ -63,8 +83,6 @@ export default function QuizPage() {
           onChange={(e) => {
             const newCategory = e.target.value;
             setSelectedCategory(newCategory);
-
-            // 書名リストも初期化
             const newBooks = newCategory === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
             setSelectedBook(newBooks[0]);
           }}
@@ -138,6 +156,12 @@ export default function QuizPage() {
           <p>
             {selectedAnswer === quiz.answer ? '正解！' : '不正解。'} 解説: {quiz.explanation}
           </p>
+          <button
+            onClick={handleNextQuestion}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            次の問題を用意
+          </button>
         </div>
       )}
     </div>
