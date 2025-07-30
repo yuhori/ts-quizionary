@@ -88,7 +88,9 @@ export default function QuizPage() {
   useEffect(() => {
     async function fetchQuizzes() {
       try {
-        const res = await fetch('/api/quizzes'); // 自分で用意したAPIエンドポイント
+        const res = await fetch('/api/quizzes',
+          { cache: 'no-store' }
+        );
         if (!res.ok) throw new Error('Failed to fetch quizzes');
         const data = await res.json();
         setQuizzes(data);
