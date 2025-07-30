@@ -23,7 +23,7 @@ const newTestamentBooks = [
   'ヨハネの第三の手紙', 'ユダの手紙', '黙示録',
 ];
 
-const formats = ['4択クイズ', '記述式'];
+const formats = ['4択クイズ'];
 
 export default function QuizPage() {
   const quizzes = [
@@ -32,18 +32,21 @@ export default function QuizPage() {
       choices: ["喜び", "悲しみ", "悔い改め", "賛美"],
       answer: "悔い改め",
       explanation: "詩編2篇では神の怒りと裁き、そして悔い改めの重要性が語られます。",
+      sources: ["創世記 1:1-2:3"],
     },
     {
       question: "イエス・キリストが誕生した場所はどこですか？",
       choices: ["ナザレ", "ベツレヘム", "エルサレム", "ガリラヤ"],
       answer: "ベツレヘム",
       explanation: "新約聖書によれば、イエスはベツレヘムで誕生しました。",
+      sources: ["ルカによる福音書 2:1-7"],
     },
     {
       question: "モーセが受けた戒めはいくつありますか？",
       choices: ["5つ", "7つ", "10個", "12個"],
       answer: "10個",
       explanation: "シナイ山で神から授けられた十戒は、モーセを通してイスラエルに伝えられました。",
+      sources: ["出エジプト記 20:1-17"],
     },
   ];
 
@@ -153,9 +156,26 @@ export default function QuizPage() {
       {/* ▼ 解説 */}
       {showExplanation && (
         <div className="border p-4 bg-white">
-          <p>
-            {selectedAnswer === quiz.answer ? '正解！' : '不正解。'} 解説: {quiz.explanation}
+          <p className={`text-lg font-bold ${selectedAnswer === quiz.answer ? 'text-green-600' : 'text-red-600'}`}>
+            {selectedAnswer === quiz.answer ? '✅ 正解です！' : '❌ 残念、不正解です。'}
           </p>
+
+          <div className="mt-2">
+            <p className="font-semibold">解説：</p>
+            <p>{quiz.explanation}</p>
+          </div>
+
+          {quiz.sources?.length > 0 && (
+            <div className="mt-2">
+              <p className="font-semibold">出典：</p>
+              <ul className="list-disc list-inside text-sm text-gray-700">
+                {quiz.sources.map((source, i) => (
+                  <li key={i}>{source}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <button
             onClick={handleNextQuestion}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
