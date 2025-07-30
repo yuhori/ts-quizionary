@@ -43,7 +43,7 @@ export default function QuizPage() {
   const [selectedTestament, setSelectedTestament] = useState(categories[0]);
   const selectedBooks = selectedTestament === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
   const [selectedBook, setSelectedBook] = useState(selectedBooks[0]);
-  const [selectedFormat, setSelectedFormat] = useState(formats[0]);
+  // const [selectedFormat, setSelectedFormat] = useState(formats[0]);
 
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -92,7 +92,8 @@ export default function QuizPage() {
     }
 
     fetchFilteredQuizzes();
-  }, [selectedTestament, selectedBook, selectedFormat, selectedBooks]);
+  }, [selectedTestament, selectedBook, selectedBooks]);
+  // }, [selectedTestament, selectedBook, selectedFormat, selectedBooks]);
 
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p>エラーが発生しました: {error}</p>;
@@ -102,7 +103,7 @@ export default function QuizPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">聖書クイズ</h1>
+      {/* <h1 className="text-3xl font-bold mb-6 text-center">聖書クイズ</h1> */}
 
       {/* ▼ 設定 */}
       <div className="flex flex-wrap gap-4 mb-6">
@@ -135,7 +136,7 @@ export default function QuizPage() {
           ))}
         </select>
 
-        <select
+        {/* <select
           className="p-2 border w-full sm:w-auto"
           value={selectedFormat}
           onChange={(e) => setSelectedFormat(e.target.value)}
@@ -145,7 +146,7 @@ export default function QuizPage() {
               {f}
             </option>
           ))}
-        </select>
+        </select> */}
       </div>
 
       {/* ▼ 問題文 */}
