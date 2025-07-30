@@ -80,15 +80,19 @@ export default function QuizPage() {
         if (!res.ok) throw new Error('Failed to fetch quizzes');
         const data = await res.json();
         setQuizzes(data);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError('エラーが発生しました');
+        }
       } finally {
         setLoading(false);
       }
     }
 
     fetchFilteredQuizzes();
-  }, [selectedTestament, selectedBook, selectedFormat]);
+  }, [selectedTestament, selectedBook, selectedFormat, selectedBooks]);
 
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p>エラーが発生しました: {error}</p>;
