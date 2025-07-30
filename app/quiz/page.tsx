@@ -3,7 +3,26 @@
 import { useState } from 'react';
 
 const categories = ['旧約聖書', '新約聖書'];
-const books = ['詩篇', '創世記', 'ヨハネ', 'マタイ']; // 適当に追加
+
+const oldTestamentBooks = [
+  '創世記', '出エジプト記', 'レビ記', '民数記', '申命記', 'ヨシュア記', '士師記',
+  'ルツ記', 'サムエル記上', 'サムエル記下', '列王記上', '列王記下', '歴代誌上',
+  '歴代誌下', 'エズラ記', 'ネヘミヤ記', 'エステル記', 'ヨブ記', '詩編', '箴言',
+  '伝道の書', '雅歌', 'イザヤ書', 'エレミヤ書', '哀歌', 'エゼキエル書', 'ダニエル書',
+  'ホセア書', 'ヨエル書', 'アモス書', 'オバデヤ書', 'ヨナ書', 'ミカ書', 'ナホム書',
+  'ハバクク書', 'ゼパニヤ書', 'ハガイ書', 'ゼカリヤ書', 'マラキ書',
+];
+
+const newTestamentBooks = [
+  'マタイによる福音書', 'マルコによる福音書', 'ルカによる福音書', 'ヨハネによる福音書',
+  '使徒行伝', 'ローマ人への手紙', 'コリント人への第一', 'コリント人への第二',
+  'ガラテヤ人への手紙', 'エペソ人への手紙', 'ピリピ人への手紙', 'コロサイ人への手紙',
+  'テサロニケ人への第一', 'テサロニケ人への第二', 'テモテへの第一', 'テモテへの第二',
+  'テトスへの手紙', 'ピレモンへの手紙', 'ヘブライ人への手紙', 'ヤコブの手紙',
+  'ペテロの第一の手紙', 'ペテロの第二の手紙', 'ヨハネの第一の手紙', 'ヨハネの第二の手紙',
+  'ヨハネの第三の手紙', 'ユダの手紙', '黙示録',
+];
+
 const formats = ['4択クイズ', '記述式'];
 
 export default function QuizPage() {
@@ -13,12 +32,15 @@ export default function QuizPage() {
       choices: ["喜び", "悲しみ", "悔い改め", "賛美"],
       answer: "悔い改め",
       explanation: "詩編2篇では神の怒りと裁き、そして悔い改めの重要性が語られます。",
-    }
+    },
   ];
 
   const quiz = quizzes[0]; // 仮の固定クイズ
+
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const [selectedBook, setSelectedBook] = useState(books[0]);
+  const selectedBooks = selectedCategory === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
+
+  const [selectedBook, setSelectedBook] = useState(selectedBooks[0]);
   const [selectedFormat, setSelectedFormat] = useState(formats[0]);
 
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -38,7 +60,14 @@ export default function QuizPage() {
         <select
           className="p-2 border w-full sm:w-auto"
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={(e) => {
+            const newCategory = e.target.value;
+            setSelectedCategory(newCategory);
+
+            // 書名リストも初期化
+            const newBooks = newCategory === '旧約聖書' ? oldTestamentBooks : newTestamentBooks;
+            setSelectedBook(newBooks[0]);
+          }}
         >
           {categories.map((c) => (
             <option key={c} value={c}>
@@ -52,7 +81,7 @@ export default function QuizPage() {
           value={selectedBook}
           onChange={(e) => setSelectedBook(e.target.value)}
         >
-          {books.map((b) => (
+          {selectedBooks.map((b) => (
             <option key={b} value={b}>
               {b}
             </option>
